@@ -1,0 +1,55 @@
+FROM debian:buster
+RUN apt update -y && apt upgrade -y
+
+
+# install wget for the WordPress link?
+RUN apt-get -y install wget
+
+# install php and dependencies
+RUN apt-get install -y php7.3\
+			php-fpm\
+			php-mysql\
+			mariadb-client
+
+# install WordPress using wget with the installation link
+RUN wget https://wordpress.org/latest.tar.gz -P /var/www
+
+# decompress the tar file
+RUN cd /var/www && tar -xzf latest.tar.gz && rm latest.tar.gz
+
+# check/provide root access to write in created folder
+RUN chown -R root:root /var/www/wordpress
+
+# install vim
+RUN apt install vim -y
+
+# Copy custom www.conf file into the container
+COPY www.conf /etc/php/7.3/fpm/pool.d/www.conf
+
+# Restart PHP-FPM to apply changes
+RUN service php7.3-fpm restart
+
+# install CLI for the config of WordPress
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+
+# change access rights and move to the correct folder
+RUN chmod +x wp-cli.phar
+RUN mv wp-cli.phar /usr/local/bin/wp
+
+# install CLI package
+#RUN wp --allow-root core download
+
+# copy the initialization script into the container
+COPY conf/auto_config.sh /usr/local/bin/auto_config.sh
+
+# Set env variables 
+#ENV SQL_DATABASE=mydatabase
+#ENV SQL_USER=myuser
+#ENV SQL_PASSWORD=mypassword
+#ENV SQL_ROOT_PASSWORD=jolande
+
+# Ensure the script is executable
+RUN chmod +x /usr/local/bin/auto_config.sh
+
+# set the entrypoint to execute the initialization script
+ENTRYPOINT ["/usr/local/bin/auto_config.sh"]
