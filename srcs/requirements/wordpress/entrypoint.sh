@@ -1,10 +1,13 @@
 #!/bin/bash
 
+# making sure mariaDB has been launched before config WordPress db
+sleep 10
+
 # Wait for MariaDB to be ready
-echo "Waiting for MariaDB to be ready..."
-while ! mariadb -hmariadb -u$MARIADB_USER -p$MARIADB_PASSWORD $MARIADB_DATABASE &>/dev/null; do
-    sleep 1
-done
+# echo "Waiting for MariaDB to be ready..."
+# while ! mysql -hmariadb -u$MARIADB_USER -p$MARIADB_PASSWORD $MARIADB_DATABASE &>/dev/null; do
+#     sleep 1
+# done
 
 echo "MariaDB is ready!"
 
