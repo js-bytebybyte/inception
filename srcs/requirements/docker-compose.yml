@@ -7,7 +7,7 @@ services:
     networks:
       - inception
     volumes:
-      - ./wordpress:/var/www/wordpress
+      - wordpress_data:/var/www/wordpress
     #env_file: .env
     ports:
       - "8080:80"
@@ -44,8 +44,6 @@ services:
       - MARIADB_HOST=mariadb
     depends_on:
       - mariadb
-    ports:
-       - "80:80"
     networks:
       - inception
 

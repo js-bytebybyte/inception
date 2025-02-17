@@ -25,7 +25,8 @@ RUN wget https://wordpress.org/latest.tar.gz -P /var/www
 RUN cd /var/www && tar -xzf latest.tar.gz && rm latest.tar.gz
 
 # check/provide root access to write in created folder
-RUN chown -R root:root /var/www/wordpress
+# RUN chown -R root:root /var/www/wordpress
+RUN chown -R www-data:www-data /var/www/wordpress
 
 # Copy custom www.conf file into the container
 COPY www.conf /etc/php/8.3/fpm/pool.d/www.conf
